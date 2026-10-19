@@ -265,13 +265,14 @@ def score(golden):
     rows, preds, truth = [], [], []
     for g in golden:
         tr = classify(g["text"])
+        time.sleep(2)
         rows.append({"text": g["text"][:90], "expected": g["label"],
                      "got": tr.final, "ok": tr.final == g["label"],
                      "branch": tr.branch, "confidence": tr.confidence})
         preds.append(tr.final)
         truth.append(g["label"])
     correct = sum(r["ok"] for r in rows)
-    k = cohen_kappa_score(truth, preds, labels=CATS) if len(set(truth)) > 1 else 0.0
+    k = cohen_kappa_score(truth, preds) if len(set(truth)) > 1 else 0.0
     return {"rows": rows, "correct": correct, "total": len(rows),
             "accuracy": round(correct / len(rows), 4) if rows else 0.0,
             "kappa": round(float(k), 4)}

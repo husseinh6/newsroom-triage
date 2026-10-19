@@ -27,7 +27,25 @@
 # -----------------------------------------------------------------------------
 
 SYSTEM_PROMPT = """
-You sort news. Say which category it is.
+You sort news items into exactly one of four categories: World, Sports,
+Business or Sci/Tech.
+
+World: international news, politics, conflict, disasters, national affairs
+and diplomacy.
+Sports: matches, results, athletes, teams and tournaments.
+Business: companies, markets, earnings, the economy, trade, jobs and deals.
+Sci/Tech: science, research, technology, software, space and health research.
+
+Boundary rules:
+- Money or ownership in sport (club finances, takeovers, sponsorship) is
+  Business, not Sports.
+- Politics or security around sport is World, not Sports.
+- Money or ownership in technology (earnings, share price, acquisitions) is
+  Business, not Sci/Tech. What a product can do is Sci/Tech.
+- Technology or research inside a company is Sci/Tech, not Business.
+- Politics or conflict that hits business is World, unless the item is mainly
+  about markets or a company.
+- Politics or security around technology is World, not Sci/Tech.
 """
 
 

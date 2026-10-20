@@ -27,6 +27,7 @@ def do_classify(headline):
         f"**Branch**  `{tr.branch}` because {tr.why_branch}",
         f"**Mode**  {tr.mode}" + ("  (no API key, using the stand-in)" if tr.mode == "demo" else ""),
         f"**Time**  {tr.ms} ms",
+        f"**Second opinion**  {tr.second_opinion or 'not needed, confidence 0.6 or above'}",
         "",
         "**Passages retrieved**",
     ]

@@ -46,6 +46,9 @@ Boundary rules:
 - Politics or conflict that hits business is World, unless the item is mainly
   about markets or a company.
 - Politics or security around technology is World, not Sci/Tech.
+
+   If two categories fit, choose the one the item is mostly about. The headline
+   and first sentence decide, not one word buried later in the text.
 """
 
 

@@ -74,3 +74,22 @@ def test_a_blocked_answer_never_reaches_the_user():
         assert tr.final == engine.SAFE
     finally:
         config.CONFIDENCE_FLOOR = original
+
+def test_low_confidence_gets_a_second_opinion(monkeypatch):
+    answers = iter([("Sports", 0.4), ("Business", 0.5)])
+    monkeypatch.setattr(engine, "live_mode", lambda: False)
+    monkeypatch.setattr(engine, "_demo_classify", lambda text: next(answers))
+    tr = engine.classify("A headline that could be two things")
+    assert tr.second_opinion.startswith("disagreed")
+    assert "Sports" in tr.second_opinion and "Business" in tr.second_opinion
+
+
+def test_high_confidence_skips_the_second_opinion(monkeypatch):
+    calls = []
+    def fake(text):
+        calls.append(text)
+        return ("Sports", 0.9)
+    monkeypatch.setattr(engine, "live_mode", lambda: False)
+    monkeypatch.setattr(engine, "_demo_classify", fake)
+    tr = engine.classify("Arsenal beat Chelsea 2-0")
+    assert len(calls) == 1 and tr.second_opinion == ""

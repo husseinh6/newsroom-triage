@@ -199,8 +199,10 @@ class Trace:
     final: str = ""
     mode: str = "demo"
     ms: int = 0
+    second_opinion: str = ""
 
 SAFE = "I am not able to answer that one."
+SECOND_OPINION_BELOW = 0.6
 
 def classify(headline):
     t0 = time.time()
@@ -229,10 +231,18 @@ def classify(headline):
             tr.final = "I do not have a note covering that."
         tr.confidence = 1.0
     else:
-        if tr.mode == "live":
-            cat, conf = _groq_classify(headline, config.SYSTEM_PROMPT, tr.passages)
-        else:
-            cat, conf = _demo_classify(headline)
+        def ask():
+            if tr.mode == "live":
+                return _groq_classify(headline, config.SYSTEM_PROMPT, tr.passages)
+            return _demo_classify(headline)
+        cat, conf = ask()
+        if conf < SECOND_OPINION_BELOW:
+            cat2, conf2 = ask()
+            if cat2 == cat:
+                tr.second_opinion = f"agreed: {cat2} ({conf2:.2f})"
+            else:
+                tr.second_opinion = (f"disagreed: first {cat} ({conf:.2f}), "
+                                     f"second {cat2} ({conf2:.2f})")
         tr.final, tr.confidence = cat, conf
 
     tr.raw_answer = tr.final
